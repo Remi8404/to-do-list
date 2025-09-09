@@ -1,0 +1,16 @@
+#root {
+  max-width: 100%;
+
+  text-align: center;
+  font-family: sans-serif;
+}
+
+body {
+  margin: 0;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
