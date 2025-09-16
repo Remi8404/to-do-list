@@ -1,0 +1,79 @@
+.rjsf {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 15px;
+  width: 100%; /* Full width inside the SCard */
+  max-width: 320px; /* Constrain to the card's width */
+  box-sizing: border-box; /* Ensure padding is included in the width */
+
+  & label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  & input,
+  & textarea {
+    background-color: #dcdede;
+    border-color: #fceeee;
+    font-size: 1rem;
+    font-weight: 400;
+    text-align: left;
+    padding: 0.5rem;
+    width: 290px;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  & .chakra-form-control {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  & textarea {
+    min-height: 40px;
+    resize: vertical;
+  }
+
+  & .chakra-button {
+    border: 3px solid #dcdede;
+    text-align: center;
+    border-radius: 9999px;
+    padding: 15px;
+    margin: 5px;
+    background-color: white;
+    color: black;
+    text-decoration: none;
+    white-space: nowrap;
+    width: 100%;
+  }
+
+  & .chakra-button:hover {
+    background-color: black;
+    color: white;
+  }
+
+  & .chakra-stack {
+    max-width: 270px;
+    padding: 10px;
+    border-radius: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+    background-color: white;
+  }
+  .chakra-stack input[type="text"] {
+    background-color: white;
+    width: 200px;
+  }
+  & button[type="submit"] {
+    margin-left: 85px;
+    max-width: 100px;
+  }
+
+  h5 {
+    font-size: 1.5rem;
+    margin: 0;
+  }
+}
