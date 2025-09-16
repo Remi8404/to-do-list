@@ -4,10 +4,41 @@ import {
   Text,
   View,
   StyleSheet,
-  PDFViewer,
+  BlobProvider,
 } from "@react-pdf/renderer";
+import { Document as PDFDocument, Page as PDFPage, pdfjs } from "react-pdf";
 import useToDos from "../hooks/hook";
+import "react-pdf/dist/Page/TextLayer.css";
+import { styled } from "styled-components";
+import NavBar from "./NavBar";
 
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+const SDiv = styled.div`
+  box-shadow: 1px 3px 50px -7px rgba(0, 0, 0, 0.64);
+  width: 595px;
+  position: absolute;
+  top: 85px;
+  right: calc(50% - 595px / 2);
+  margin-bottom: 64px;
+`;
+
+const SA = styled.a`
+  position: absolute;
+  top: 85px;
+  right: 0px;
+  border: 3px solid #dcdede;
+  text-align: center;
+  border-radius: 9999px;
+  padding: 15px;
+  margin: 15px;
+  background-color: white;
+  color: black;
+  text-decoration: none;
+  &:hover {
+    background-color: #dcdede;
+    color: black;
+  }
+`;
 const styles = StyleSheet.create({
   page: {
     flexDirection: "column",
@@ -26,12 +57,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   done: {
-    textDecoration: "line-through", // Tâche terminée, barrée
-    color: "gray", // Couleur pour les tâches terminées
+    textDecoration: "line-through",
+    color: "gray",
     marginBottom: 5,
   },
   task: {
-    marginBottom: 5, // Espacement entre les tâches
+    marginBottom: 5,
   },
 });
 
@@ -47,22 +78,39 @@ const PDFTextGenerator = () => {
   notDoneTasks.map((task) => {
     notDoneText += `° ${task.name} \n${task.description}\n`;
   });
+
   return (
     <>
       <title>ToDoList - PDF</title>
-      <PDFViewer
-        style={{
-          width: "calc(100% - 4px)",
-          height: "calc(100vh - 8px)",
-        }}
+      <NavBar />
+      <BlobProvider
+        document={<MyDocument doneText={doneText} notDoneText={notDoneText} />}
       >
-        <MyDocument doneText={doneText} notDoneText={notDoneText} />
-      </PDFViewer>
+        {({ blob, url, loading, error }) => {
+          if (error) {
+            return <div>Error: {error.message}</div>;
+          } else if (loading) {
+            return <div>Loading ...</div>;
+          } else {
+            return (
+              <>
+                <SA href={url ? url : ""} download="todos.pdf">
+                  Download
+                </SA>
+                <SDiv>
+                  <PDFDocument file={url}>
+                    <PDFPage pageNumber={1} renderAnnotationLayer={false} />
+                  </PDFDocument>
+                </SDiv>
+              </>
+            );
+          }
+        }}
+      </BlobProvider>
     </>
   );
 };
 
-// Composant Document
 const MyDocument = ({
   doneText,
   notDoneText,
@@ -76,8 +124,6 @@ const MyDocument = ({
         <View>
           <Text style={styles.header}>Mes Tâches</Text>
         </View>
-
-        {/* Tâches non terminées */}
         <View style={styles.section}>
           <Text style={{ fontSize: 16, fontWeight: "bold" }}>À faire</Text>
           <Text style={styles.task}>{notDoneText}</Text>

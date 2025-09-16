@@ -43,7 +43,7 @@ export default function NavBar() {
           pathname: "/toDo",
         }}
       >
-        Start
+        To Dos
       </SLink>
       <SLink
         to={{

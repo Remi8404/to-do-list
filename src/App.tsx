@@ -41,7 +41,14 @@ export default function App() {
                 </>
               }
             />
-            <Route path="/PDF" element={<PDFTextGenerator />} />
+            <Route
+              path="/PDF"
+              element={
+                <>
+                  <PDFTextGenerator />
+                </>
+              }
+            />
           </Routes>
         </BrowserRouter>
       </Provider>
