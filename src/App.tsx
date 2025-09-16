@@ -13,42 +13,12 @@ export default function App() {
     <div id="root">
       <Provider store={store}>
         <BrowserRouter>
+          <NavBar />
           <Routes>
-            <Route
-              path="/"
-              element={
-                <>
-                  <NavBar />
-                  <Home />
-                </>
-              }
-            />
-            <Route
-              path="/ToDo"
-              element={
-                <>
-                  <NavBar />
-                  <ToDoApp />
-                </>
-              }
-            />
-            <Route
-              path="/Map"
-              element={
-                <>
-                  <NavBar />
-                  <DisplayMap />
-                </>
-              }
-            />
-            <Route
-              path="/PDF"
-              element={
-                <>
-                  <PDFTextGenerator />
-                </>
-              }
-            />
+            <Route path="/" element={<Home />} />
+            <Route path="/ToDo" element={<ToDoApp />} />
+            <Route path="/Map" element={<DisplayMap />} />
+            <Route path="/PDF" element={<PDFTextGenerator />} />
           </Routes>
         </BrowserRouter>
       </Provider>

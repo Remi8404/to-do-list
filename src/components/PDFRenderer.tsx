@@ -10,7 +10,6 @@ import { Document as PDFDocument, Page as PDFPage, pdfjs } from "react-pdf";
 import useToDos from "../hooks/hook";
 import "react-pdf/dist/Page/TextLayer.css";
 import { styled } from "styled-components";
-import NavBar from "./NavBar";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 const SDiv = styled.div`
@@ -82,11 +81,10 @@ const PDFTextGenerator = () => {
   return (
     <>
       <title>ToDoList - PDF</title>
-      <NavBar />
       <BlobProvider
         document={<MyDocument doneText={doneText} notDoneText={notDoneText} />}
       >
-        {({ blob, url, loading, error }) => {
+        {({ url, loading, error }) => {
           if (error) {
             return <div>Error: {error.message}</div>;
           } else if (loading) {
