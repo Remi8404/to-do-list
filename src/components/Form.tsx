@@ -1,5 +1,5 @@
 import { useAppDispatch } from "../hooks/hook";
-import { add } from "../stores/toDoSlice";
+import { add, update, type IToDo } from "../stores/toDoSlice";
 import { type IChangeEvent } from "@rjsf/core";
 import Form from "@rjsf/chakra-ui";
 import validator from "@rjsf/validator-ajv8";
@@ -19,7 +19,7 @@ export type Inputs = {
 };
 
 const schema: RJSFSchema = {
-  title: "Create a new Task",
+  title: "Your Task",
   type: "object",
   required: ["name"],
   properties: {
@@ -92,34 +92,41 @@ const widgets = {
   addressSearch: AddressSearchWidget,
 };
 
-export default function AddForm({
+export default function TaskForm({
   setShowForm,
+  type = "add",
+  todoValue,
 }: {
   setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
+  type: "add" | "update";
+  todoValue: Partial<IToDo>;
 }) {
-  const [lat, setLat] = useState(0);
-  const [long, setLong] = useState(0);
-  const [selectedAddress, setSelectedAddress] = useState("");
-
   const dispatch = useAppDispatch();
 
   // Keep track of the current form data, including address, lat, and lng
   const [formData, setFormData] = useState<Inputs>({
-    name: "",
-    description: "",
-    limitDate: "",
-    isDone: false,
-    otherInfo: [],
-    lat: lat,
-    lng: long,
-    address: selectedAddress,
+    name: todoValue.name ? todoValue.name : "",
+    description: todoValue.description ? todoValue.description : "",
+    limitDate: todoValue.limitDate ? todoValue.limitDate : "",
+    isDone: todoValue.isDone ? todoValue.isDone : false,
+    otherInfo: todoValue.otherInfo ? todoValue.otherInfo : [],
+    lat: todoValue.lat ? todoValue.lat : 0,
+    lng: todoValue.lng ? todoValue.lng : 0,
+    address: todoValue.address ? todoValue.address : "",
   });
+  const [lat, setLat] = useState(formData.lat);
+  const [long, setLong] = useState(formData.lng);
+  const [selectedAddress, setSelectedAddress] = useState(formData.address);
 
   const onSubmit = (e: IChangeEvent<any, RJSFSchema, any>) => {
     e.formData.lat = lat;
     e.formData.lng = long;
     e.formData.address = selectedAddress;
-    dispatch(add(e.formData as Inputs));
+    if (type === "add") {
+      dispatch(add(e.formData as Inputs));
+    } else {
+      dispatch(update({ ...(e.formData as Inputs), id: todoValue.id }));
+    }
     setShowForm(false);
   };
 

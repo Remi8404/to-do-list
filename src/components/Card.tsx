@@ -3,89 +3,7 @@ import { useAppDispatch } from "../hooks/hook";
 import { remove, update } from "../stores/toDoSlice";
 import Button from "./Button";
 import { useState } from "react";
-import { type IChangeEvent } from "@rjsf/core";
-import Form from "@rjsf/chakra-ui";
-import validator from "@rjsf/validator-ajv8";
-import { type RJSFSchema, type UiSchema } from "@rjsf/utils";
-import AddressSearchWidget from "./AddressSearchWidget";
-import { type Inputs } from "./Form";
-
-const schema: RJSFSchema = {
-  title: "Update your Task",
-  type: "object",
-  required: ["name"],
-  properties: {
-    name: {
-      type: "string",
-      title: "Title",
-      default: "A new task",
-      minLength: 1,
-    },
-    description: {
-      type: "string",
-      title: "Description",
-      default: "Your description",
-    },
-    limitDate: { type: "string", title: "Expiration Date", default: "" },
-    isDone: { type: "boolean", title: "Done?", default: false },
-    otherInfo: {
-      title: "Other Informations",
-      type: "array",
-      items: {
-        type: "string",
-        default: "Other info",
-        title: "Other info",
-      },
-    },
-    lat: {
-      title: "Latitude",
-      type: "number",
-      default: 0,
-    },
-    lng: {
-      title: "Longitude",
-      type: "number",
-      default: 0,
-    },
-    address: {
-      title: "Adresse",
-      type: "string",
-    },
-  },
-};
-
-const uiSchema: UiSchema = {
-  name: {
-    "ui:widget": "text",
-  },
-  description: {
-    "ui:widget": "textarea",
-  },
-  limitDate: {
-    "ui:widget": "date",
-  },
-  isDone: {
-    "ui:widget": "checkbox",
-  },
-  otherInfo: {
-    "ui:options": {
-      orderable: false,
-    },
-  },
-  address: {
-    "ui:widget": "addressSearch",
-  },
-  lat: {
-    "ui:widget": "hidden",
-  },
-  lng: {
-    "ui:widget": "hidden",
-  },
-};
-
-const widgets = {
-  addressSearch: AddressSearchWidget,
-};
+import TaskForm from "./Form";
 
 export interface ICard {
   id: string;
@@ -122,7 +40,10 @@ const SCardForm = styled.div`
     box-shadow: 4px 4px 3px grey;
   }
 
-  & ul li {
+  & li {
+    color: black;
+  }
+  & .css-13avqnh {
     color: black;
   }
 `;
@@ -219,22 +140,6 @@ export default function Card({
 }: ICard) {
   const dispatch = useAppDispatch();
   const [isUpdating, setUpdating] = useState(false);
-  const [status, setStatus] = useState(isDone);
-  const [date, setDate] = useState(limitDate);
-
-  const [updateLat, setLat] = useState(lat);
-  const [updateLong, setLong] = useState(lng);
-  const [selectedAddress, setSelectedAddress] = useState(address);
-  const [formData, setFormData] = useState<Inputs>({
-    name: name,
-    description: description,
-    limitDate: limitDate,
-    isDone: isDone,
-    otherInfo: otherInfo ? otherInfo : [],
-    lat: updateLat,
-    lng: updateLong,
-    address: selectedAddress,
-  });
 
   if (!isUpdating) {
     return (
@@ -260,11 +165,9 @@ export default function Card({
               <SGenericInput
                 id={id + "lD"}
                 type="date"
-                value={date}
+                value={limitDate}
                 onChange={(e) => {
-                  const newDate = e.target.value;
-                  setDate(newDate);
-                  dispatch(update({ id, limitDate: newDate }));
+                  dispatch(update({ id, limitDate: e.target.value }));
                 }}
               />
             </label>
@@ -284,26 +187,17 @@ export default function Card({
             type="checkbox"
             id={id + "done"}
             onChange={() => {
-              const newStatus = !status;
-              setStatus(newStatus);
-              dispatch(update({ id, isDone: newStatus }));
+              dispatch(update({ id, isDone: !isDone }));
             }}
-            checked={status}
+            checked={isDone}
           />
         </label>
       </SCard>
     );
   } else {
-    const onSubmit = (e: IChangeEvent<any, RJSFSchema, any>) => {
-      e.formData.lat = updateLat;
-      e.formData.lng = updateLong;
-      e.formData.address = selectedAddress;
-      dispatch(update({ ...(e.formData as Inputs), id: id }));
-      setUpdating(false);
-    };
     return (
       <SCardForm>
-        <Form
+        {/* <Form
           id={id}
           schema={schema}
           uiSchema={uiSchema}
@@ -319,7 +213,22 @@ export default function Card({
           <button className="chakra-button css-4xx2wk" type="submit">
             valider
           </button>
-        </Form>
+        </Form> */}
+        <TaskForm
+          setShowForm={setUpdating}
+          type="update"
+          todoValue={{
+            id: id,
+            name: name,
+            description: description,
+            limitDate: limitDate ? limitDate : "",
+            isDone: isDone,
+            otherInfo: otherInfo ? otherInfo : [],
+            lat: lat,
+            lng: lng,
+            address: address,
+          }}
+        />
       </SCardForm>
     );
   }

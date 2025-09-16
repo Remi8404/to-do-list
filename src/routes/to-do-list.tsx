@@ -6,7 +6,7 @@ import useToDos from "../hooks/hook";
 import { useAppDispatch } from "../hooks/hook";
 import { useState, useEffect, useRef } from "react";
 import { add, reset, reorder } from "../stores/toDoSlice";
-import AddForm from "../components/Form";
+import TaskForm from "../components/Form";
 import {
   draggable,
   dropTargetForElements,
@@ -144,7 +144,7 @@ export default function ToDoApp() {
           {isShowForm && (
             <SLi>
               <SCardForm>
-                <AddForm setShowForm={setShowForm} />
+                <TaskForm setShowForm={setShowForm} type="add" todoValue={{}} />
               </SCardForm>
             </SLi>
           )}
